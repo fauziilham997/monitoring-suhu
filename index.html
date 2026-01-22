@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frozen Monitor - Professional Dashboard</title>
+    <style>
+        /* CSS: Tampilan Elegant Dark Mode */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            width: 450px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 { text-align: center; font-weight: 300; letter-spacing: 1px; margin-bottom: 30px; }
+
+        .temp-display {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            margin-bottom: 25px;
+        }
+
+        #suhu-angka {
+            font-size: 72px;
+            font-weight: 700;
+            margin: 0;
+            transition: all 0.5s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        /* Variasi Warna Status */
+        .bg-aman { color: #4ade80; border: 1px solid #4ade80; }
+        .bg-waspada { color: #fbbf24; border: 1px solid #fbbf24; }
+        .bg-kritis { color: #f87171; border: 1px solid #f87171; animation: pulse 1s infinite; }
+
+        @keyframes pulse { 50% { opacity: 0.5; } }
+
+        .control-panel { display: flex; gap: 10px; margin-bottom: 25px; }
+
+        input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            outline: none;
+        }
+
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #2563eb; }
+
+        .log-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 13px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .log-item {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard">
+    <h2>FREEZER MONITOR</h2>
+    
+    <div class="temp-display">
+        <p style="margin:0; color: #94a3b8; font-size: 14px;">Suhu Saat Ini</p>
+        <h1 id="suhu-angka">-18.0°C</h1>
+        <div id="badge" class="status-badge bg-aman">Status: Stabil</div>
+    </div>
+
+    <div class="control-panel">
+        <input type="number" id="input-suhu" placeholder="Input Suhu (°C)">
+        <button onclick="updateData()">Update</button>
+    </div>
+
+    <div class="log-section" id="log-list">
+        <div style="color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">Riwayat Aktivitas:</div>
+        </div>
+</div>
+
+<script>
+    function updateData() {
+        const input = document.getElementById('input-suhu');
+        const angka = document.getElementById('suhu-angka');
+        const badge = document.getElementById('badge');
+        const logList = document.getElementById('log-list');
+
+        if (input.value === "") return;
+
+        const suhu = parseFloat(input.value);
+        angka.innerText = suhu.toFixed(1) + "°C";
+
+        // Logika Perubahan Tampilan
+        if (suhu > -10) {
+            badge.innerText = "Status: Kritis";
+            badge.className = "status-badge bg-kritis";
+            angka.style.color = "#f87171";
+        } else if (suhu > -18) {
+            badge.innerText = "Status: Waspada";
+            badge.className = "status-badge bg-waspada";
+            angka.style.color = "#fbbf24";
+        } else {
+            badge.innerText = "Status: Stabil";
+            badge.className = "status-badge bg-aman";
+            angka.style.color = "#4ade80";
+        }
+
+        // Tambah ke Log
+        const waktu = new Date().toLocaleTimeString('id-ID');
+        const newLog = document.createElement('div');
+        newLog.className = 'log-item';
+        newLog.innerHTML = `<strong>${waktu}</strong> - Suhu diperbarui ke ${suhu}°C`;
+        logList.insertBefore(newLog, logList.firstChild);
+
+        input.value = ""; // Bersihkan input
+    }
+</script>
+
+</body>
+</html>
